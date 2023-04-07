@@ -4,3 +4,4 @@ USERNAME = 'root'
 PASSWORD = 'Beyond2016'
 DATABASE = 'TEST_DB'
 DB_URI = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4"
+

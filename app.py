@@ -1,27 +1,29 @@
 import os.path
 
-from flask import Flask, request
+from flask import Flask, request, session, redirect
 from flask import render_template
 from model import BreastCancer as Detector
 from werkzeug.utils import secure_filename
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
 app = Flask(__name__)
 
-HOSTNAME = 'sh-cynosdbmysql-grp-krdmzg9q.sql.tencentcdb.com'
-PORT = 24711
-USERNAME = 'root'
-PASSWORD = 'Beyond2016'
-DATABASE = 'CANCER_USER'
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4"
+app.secret_key='QWERTYUIOP'
 
-db = SQLAlchemy(app)
-
-with app.app_context():
-    with db.engine.connect() as conn:
-        rs = conn.execute(text("select 1"))
-        print(rs.fetchone())
+# HOSTNAME = 'sh-cynosdbmysql-grp-krdmzg9q.sql.tencentcdb.com'
+# PORT = 24711
+# USERNAME = 'root'
+# PASSWORD = 'Beyond2016'
+# DATABASE = 'CANCER_USER'
+# app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4"
+#
+# db = SQLAlchemy(app)
+#
+# with app.app_context():
+#     with db.engine.connect() as conn:
+#         rs = conn.execute(text("select 1"))
+#         print(rs.fetchone())
 
 base_dir = os.path.abspath(os.path.dirname(__file__)) + "/static/upload/img"
 
@@ -75,6 +77,23 @@ def getImg():
         return "Success"
     else:
         return render_template("test.html")
+
+
+@app.route('/login')
+def show_login_page():
+    return render_template("login.html")
+
+
+@app.route('/auth', methods=['POST', 'GET'])
+def login_auth():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    print('user: ' + username + '; password: ' + password)
+    if username == 'admin' and password == '123':
+        session['user_info'] = username
+        return redirect('/home')
+    else:
+        return render_template('login.html', msg="用户名或密码输入错误")
 
 
 if __name__ == '__main__':

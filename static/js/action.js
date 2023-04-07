@@ -19,7 +19,7 @@ function retrainModel() {
 }
 
 function login() {
-    window.location.href="../index"
+    window.location.href="login"
 }
 
 function showHistory() {
